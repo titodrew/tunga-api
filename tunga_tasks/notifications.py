@@ -1246,3 +1246,54 @@ def notify_task_invoice_request_email(instance):
     send_mail(
         subject, 'tunga/email/email_task_invoice_request', to, ctx, **dict(deal_ids=[instance.hubspot_deal_id])
     )
+
+
+@job
+def notify_to_client_missed_and_communicated(instance):
+    instance = clean_instance(instance, ProgressReport)
+    to = is_pm_or_client_report and TUNGA_STAFF_UPDATE_EMAIL_RECIPIENTS or [
+        instance.event.task.user.email
+    ]
+
+    if instance.event.task.owner and not is_pm_or_client_report:
+        to.append(instance.event.task.owner.email)
+
+    subject = "{} status update.".format(instance.task_id)
+    ctx = {
+        'owner': instance.owner or instance.user,
+        'task': instance,
+    }
+    send_mail(
+        subject, 'tunga/email/email_task_to_client_missed_and_communicated',
+        to, ctx, **dict(deal_ids=[instance.hubspot_deal_id])
+    )
+
+
+@job
+def notify_to_client_missed_and_not_communicated(instance):
+    pass
+
+
+@job
+def notify_to_pm_missed_and_communicated(instance):
+    pass
+
+
+@job
+def notify_to_pm_missed_and_not_communicated(instance):
+    pass
+
+
+@job
+def notify_to_dev_progress_report(instance):
+    pass
+
+
+@job
+def notify_to_client_not_satisfied_with_deliverables(instance):
+    pass
+
+
+@job
+def notify_to_dev_and_pm_not_satisfied_with_deliverables(instance):
+    pass

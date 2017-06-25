@@ -1,0 +1,25 @@
+{% extends "tunga/email/base.html" %}
+{% load i18n %}
+{% block email_header %}
+    New progress report for
+     {% if event.task.is_task %}
+     task
+     {% else %}
+     project
+     {% endif %}.
+{% endblock %}
+{% block email_content %}
+    <p> Hello {{ instance.user }}</p>
+    <p>You’ve let us know that the deliverable on your [NAME PROJECT]
+     project was not up to standard. We apologize sincerely for the
+      inconvenience this may have caused.</p>
+    <p>This email is to notify you that we will be contacting you very soon
+     to discuss the details of it and how we can help
+      in resolving this very quickly.</p>
+    <p>In case you do not want us to contact you or you have already been
+     helped with this matter, please click the button below.</p>
+     <button></button>
+     <p>Best regards,</p>
+     <p>Tunga</p>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "tunga/email/base.html" %}
+{% load i18n %}
+{% block email_header %}
+    New progress report for
+     {% if event.task.is_task %}
+     task
+     {% else %}
+     project
+     {% endif %}.
+{% endblock %}
+{% block email_content %}
+    <p> Hello {{ instance.user }}</p>
+    <p>It seems that you are behind schedule according to your
+     progress report.</p>
+    <p>We are writing you to find out if there’s anyway we could support you.</p>
+    <p>Please let us know in the form below if you’ll
+     still meet the deadline.</p>
+    <button></button>
+    <p>Best regards,</p>
+    <p>Tunga</p>
+{% endblock %}
