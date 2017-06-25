@@ -1,0 +1,24 @@
+{% extends "tunga/email/base.html" %}
+{% load i18n %}
+{% block email_header %}
+    New progress report for
+     {% if event.task.is_task %}
+     task
+     {% else %}
+     project
+     {% endif %}.
+{% endblock %}
+{% block email_content %}
+    <p> Hello {{ instance.user }}</p>
+    <p>It seems that a deadline has been missed on your
+     [NAME PROJECT] for [NAME CLIENT]. </p>
+    <p>We are writing to let you know that we’ll be contacting you very
+     shortly about the details of the matter and how we can possibly
+      support you in the project.</p>
+    <p>In the meanwhile, you can give us some details by clicking
+     the button below.</p>
+     <button></button>
+     <p>Best regards,</p>
+     <p>Tunga</p>
+
+{% endblock %}
