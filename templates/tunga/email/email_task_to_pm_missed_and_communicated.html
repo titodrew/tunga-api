@@ -5,13 +5,13 @@
 {% endblock %}
 {% block email_content %}
     <p> Hello {{ instance.user }}</p>
-    <p>It seems that a deadline has been missed on your [NAME PROJECT]
-     for [NAME CLIENT].</p>
+    <p>It seems that a deadline has been missed on your
+     {% if event.task.title %} {{ event.task.title }}
+      {% if event.task.is_task %}task{% else %}project{% endif %}
+     for {{ instance.task.owner }}.</p>
     <p>You’ve let us know that either you or one
      of the developers in the team contacted the client about the issue.</p>
     <p>Could you please provide us with some extra
      feedback by filling in the feedback below?</p>
-    <button></button>
-    <p>Best regards,</p>
-    <p>Tunga</p>
+    <a href="{{ update_url }}">{{ update_url }}</a>
 {% endblock %}

@@ -10,13 +10,12 @@
 {% endblock %}
 {% block email_content %}
     <p> Hello {{ instance.user }}</p>
-    <p>It seems that a deadline on your {{ instance.task_id }}
-    project has been missed. </p>
+    <p>It seems that a deadline on your {% if event.task.title %}
+     {{ event.task.title }} {% if event.task.is_task %}
+     task{% else %}project{% endif %} project has been missed. </p>
     <p>We apologize sincerely for the inconvenience this may have caused.</p>
     <p>This email is to notify you that we will be contacting
      you very soon to discuss the details of it and how we
      can help in resolving this very quickly.</p>
-     <p>Best regards,</p>
-     <p>Tunga</p>
 
 {% endblock %}
