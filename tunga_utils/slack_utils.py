@@ -1,6 +1,7 @@
 import json
 
 import requests
+from lxml.etree import Error
 from slacker import Slacker
 
 from tunga.settings import SLACK_STAFF_OUTGOING_WEBHOOK_TOKEN, SLACK_AUTHORIZE_URL, SLACK_SCOPES, SLACK_CLIENT_ID, \
@@ -45,8 +46,13 @@ KEY_MRKDWN = 'mrkdwn'
 KEY_MRKDWN_IN = 'mrkdwn_in'
 KEY_COMMAND = 'command'
 
+KEY_ID = 'id'
 KEY_CHANNELS = 'channels'
 KEY_CHANNEL = 'channel'
+KEY_MEMBERS = 'members'
+KEY_PROFILE = 'profile'
+KEY_EMAIL = 'email'
+KEY_NAME = 'name'
 
 
 def get_authorize_url(redirect_uri):
@@ -125,45 +131,52 @@ def send_slack_message(token, channel, message=None, attachments=None, author_na
     )
 
 
+def get_user_id(email, token):
+    slack_client = Slacker(token)
+    try:
+        response = slack_client.users.list()
+        if response.successful:
+            users = response.body.get(KEY_MEMBERS, None)
+            if users:
+                for user in users:
+                    user_profile = user.get(KEY_PROFILE, None)
+                    if user_profile:
+                        if user_profile.get(KEY_EMAIL, None) == email:
+                            return user.get(KEY_ID, None)
+    except:
+        pass
+    return None
+
+
+def get_username(email, token):
+    slack_client = Slacker(token)
+    try:
+        response = slack_client.users.list()
+        if response.successful:
+            users = response.body.get(KEY_MEMBERS, None)
+            if users:
+                for user in users:
+                    user_profile = user.get(KEY_PROFILE, None)
+                    if user_profile:
+                        if user_profile.get(KEY_EMAIL, None) == email:
+                            return user.get(KEY_NAME, None)
+    except:
+        pass
+    return None
+
+
 def get_user_im_id(email, token):
-    slack_client = Slacker(token)
-    try:
-        response = slack_client.users.list()
-    except:
-        return None
+    user_id = get_user_id(email, token)
 
+    if user_id:
+        slack_client = Slacker(token)
 
-    if response.body['ok']:
-        users = response.body['members']
+        try:
+            im_response = slack_client.im.open(user_id)
+            if im_response and im_response.successful:
+                im_details = im_response.body.get(KEY_CHANNEL, None)
+                return im_details.get(KEY_ID, None)
+        except:
+            pass
+    return None
 
-        if users:
-            for user in users:
-                if 'email' in user['profile'] and user['profile']['email'] == email:
-                    for im in slack_client.im.list().body['ims']:
-                        if im['user'] == user['id']:
-                            return im['id']
-            return None
-        else:
-            return response
-    else:
-        return response
-
-def get_user_username(email, token):
-    slack_client = Slacker(token)
-    try:
-        response = slack_client.users.list()
-    except:
-        return None
-
-    if response.body['ok']:
-        users = response.body['members']
-
-        if users:
-            for user in users:
-                if 'email' in user['profile'] and user['profile']['email'] == email:
-                    return '@%s' % user['name']
-            return None
-        else:
-            return response
-    else:
-        return response

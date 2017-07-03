@@ -297,6 +297,8 @@ class TaskSerializer(ContentTypeAnnotatedModelSerializer, DetailAnnotatedModelSe
     quote = SimpleQuoteSerializer(required=False, read_only=True)
     tunga_ratio_dev = serializers.DecimalField(max_digits=19, decimal_places=4, required=False, read_only=True)
     tunga_ratio_pm = serializers.DecimalField(max_digits=19, decimal_places=4, required=False, read_only=True)
+    started_at = serializers.DateTimeField(required=False, read_only=True)
+    started = serializers.BooleanField(required=False, read_only=True)
 
     class Meta:
         model = Task

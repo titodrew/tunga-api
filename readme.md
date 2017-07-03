@@ -11,13 +11,14 @@ python manage.py initial_tunga_settings
 python manage.py initial_tunga_integration_events
 ```
 
-2. Install redis
+2. Install [Redis] (https://redis.io/)
+3. Install [WeazyPrint] (http://weasyprint.org/) (PDF generation)
 
 # Coding Guide
 * Built with [Django](https://www.djangoproject.com/) and [Django REST framework](http://www.django-rest-framework.org/)
 
 # Development
-1. run this commands from project root
+1. run these commands from project root
 ```
 python manage.py runserver
 python manage.py rqworker default

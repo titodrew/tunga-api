@@ -1,0 +1,18 @@
+% extends "tunga/email/content.html" %}
+{% load i18n %}
+{% block email_header %}
+    Low Rating on {% if event.task.is_task %}task{% else %}project{% endif %}.
+{% endblock %}
+{% block email_content %}
+    <p>Hi {{ user.first_name }},</p>
+
+    <p>It seems that that {{owner.first_name}} has given a low rating for your deliverable on the {% if event.task.title %} {{ event.task.title }} {% if event.task.is_task %}task{% else %}project{% endif %}:</p>
+
+    <p>We are writing you to let you know that we will be contacting you very shortly about the details of the matter and how we can support you.</p>
+
+    <p>
+        In the meanwhile, you can give us some details by clicking the button below<br/>
+        <a href="{{ update_url }}">{{ update_url }}</a>
+    </p>
+
+{% endblock %}

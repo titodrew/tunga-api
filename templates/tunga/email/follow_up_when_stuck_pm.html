@@ -1,0 +1,20 @@
+% extends "tunga/email/content.html" %}
+{% load i18n %}
+{% block email_header %}
+    Developer stuck on {% if event.task.is_task %}task{% else %}project{% endif %}.
+{% endblock %}
+{% block email_content %}
+    <p>Hi {{ pm.first_name }},</p>
+
+    <p>You’ve let us know that you or your developer(s) are currently stuck on the {% if event.task.title %} {{ event.task.title }} {% if event.task.is_task %}
+        task{% else %}project{% endif %}:</p>
+
+    <p>We are writing you to find out if there’s anyway we could support you.
+        We’ll be contacting you shortly about the details.</p>
+
+    <p>
+        But please feel free to already let us know by filling in the form below<br/>
+        <a href="{{ update_url }}">{{ update_url }}</a>
+    </p>
+
+{% endblock %}
