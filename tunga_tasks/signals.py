@@ -133,7 +133,7 @@ def activity_handler_application_response(sender, application, **kwargs):
 
         if application.status == STATUS_ACCEPTED and application.hours_needed and application.task.is_task:
             task = application.task
-            task.bid = Decimal(application.hours_needed)*application.task.dev_rate
+            task.bid = Decimal(application.hours_needed) * application.task.dev_rate
             task.save()
 
 
@@ -166,8 +166,8 @@ def activity_handler_participation_response(sender, participation, **kwargs):
 def activity_handler_estimate(sender, instance, created, **kwargs):
     if created:
         action.send(
-                instance.user, verb=verbs.CREATE,
-                action_object=instance, target=instance.task
+            instance.user, verb=verbs.CREATE,
+            action_object=instance, target=instance.task
         )
 
 
@@ -175,8 +175,8 @@ def activity_handler_estimate(sender, instance, created, **kwargs):
 def activity_handler_quote(sender, instance, created, **kwargs):
     if created:
         action.send(
-                instance.user, verb=verbs.CREATE,
-                action_object=instance, target=instance.task
+            instance.user, verb=verbs.CREATE,
+            action_object=instance, target=instance.task
         )
 
 
@@ -184,8 +184,8 @@ def activity_handler_quote(sender, instance, created, **kwargs):
 def activity_handler_progress_event(sender, instance, created, **kwargs):
     if created:
         action.send(
-                instance.created_by or instance.task.user, verb=verbs.CREATE,
-                action_object=instance, target=instance.task
+            instance.created_by or instance.task.user, verb=verbs.CREATE,
+            action_object=instance, target=instance.task
         )
 
 
@@ -207,6 +207,15 @@ def activity_handler_progress_report(sender, instance, created, **kwargs):
                 notify_dev_pm_on_failure_to_meet_deadline.delay(instance.id)
     else:
         notify_new_progress_report_slack.delay(instance.id, updated=True)
+
+
+@receiver(post_save, sender=ProgressEvent)
+def activity_handler_progress_rreport(sender, instance, created, **kwargs):
+    if created:
+        action.send(
+            instance.task.user, verb=verbs.REPORT,
+            action_object=instance, target=instance.task
+        )
 
 
 @receiver(post_save, sender=Integration)
@@ -278,5 +287,3 @@ def activity_handler_quote_status_changed(sender, quote, **kwargs):
         task.save()
 
     notify_estimate_status_email(quote.id, estimate_type='quote')
-
-
