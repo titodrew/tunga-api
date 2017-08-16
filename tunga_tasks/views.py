@@ -39,13 +39,13 @@ from tunga_tasks.filters import TaskFilter, ApplicationFilter, ParticipationFilt
     ParticipantPaymentFilter
 from tunga_tasks.models import Task, Application, Participation, TimeEntry, Project, ProgressReport, ProgressEvent, \
     Integration, IntegrationMeta, IntegrationActivity, TaskPayment, TaskInvoice, Estimate, Quote, \
-    MultiTaskPaymentKey, ParticipantPayment
+    MultiTaskPaymentKey, ParticipantPayment, SkillsApproval
 from tunga_tasks.notifications import notify_task_invoice_request_email
 from tunga_tasks.renderers import PDFRenderer
 from tunga_tasks.serializers import TaskSerializer, ApplicationSerializer, ParticipationSerializer, \
     TimeEntrySerializer, ProjectSerializer, ProgressReportSerializer, ProgressEventSerializer, \
     IntegrationSerializer, TaskPaySerializer, TaskInvoiceSerializer, EstimateSerializer, QuoteSerializer, \
-    MultiTaskPaymentKeySerializer, TaskPaymentSerializer, ParticipantPaymentSerializer
+    MultiTaskPaymentKeySerializer, TaskPaymentSerializer, ParticipantPaymentSerializer, SkillsApprovalSerializer
 from tunga_tasks.tasks import distribute_task_payment, generate_invoice_number, complete_bitpesa_payment
 from tunga_tasks.utils import save_integration_tokens, get_integration_token
 from tunga_utils import github, coinbase_utils, bitcoin_utils, bitpesa, stripe_utils
@@ -465,7 +465,7 @@ class TaskViewSet(viewsets.ModelViewSet, SaveUploadsMixin):
             return redirect(login_url)
 
         task = get_object_or_404(self.get_queryset(), pk=pk)
-    
+
         estimate = task.estimate
 
         try:
@@ -482,7 +482,7 @@ class TaskViewSet(viewsets.ModelViewSet, SaveUploadsMixin):
             }
 
             rendered_html = render_to_string("tunga/pdf/estimate.html", context=ctx).encode(encoding="UTF-8")
-            
+
             if request.accepted_renderer.format == 'html':
                 return HttpResponse(rendered_html)
 
@@ -514,7 +514,7 @@ class TaskViewSet(viewsets.ModelViewSet, SaveUploadsMixin):
             return redirect(login_url)
 
         task = get_object_or_404(self.get_queryset(), pk=pk)
-    
+
         quote = task.quote
 
         try:
@@ -531,7 +531,7 @@ class TaskViewSet(viewsets.ModelViewSet, SaveUploadsMixin):
             }
 
             rendered_html = render_to_string("tunga/pdf/quote.html", context=ctx).encode(encoding="UTF-8")
-            
+
             if request.accepted_renderer.format == 'html':
                 return HttpResponse(rendered_html)
             pdf_file = HTML(string=rendered_html, encoding='utf-8').write_pdf()
@@ -930,6 +930,16 @@ class ParticipantPaymentViewSet(viewsets.ModelViewSet):
         'source__task__title', '^source__task__user__username',
         '^source__task__user__first_name', '^source__task__user__last_name'
     )
+
+
+class SkillsApprovalViewSet(viewsets.ModelViewSet):
+    """
+    Skills Approval Resource
+    """
+    queryset = SkillsApproval.objects.all()
+    serializer_class = SkillsApprovalSerializer
+    permission_classes = [IsAdminUser]
+
 
 
 @csrf_exempt

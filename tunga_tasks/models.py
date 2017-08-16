@@ -253,7 +253,7 @@ class Task(models.Model):
     trello_board_url = models.URLField(blank=True, null=True)
     google_drive_url = models.URLField(blank=True, null=True)
     hubspot_deal_id = models.CharField(editable=False, null=True, max_length=12)
-    
+
     # Task state modifiers
     approved = models.BooleanField(
         default=False, help_text='True if task or project is ready for developers'
@@ -299,12 +299,12 @@ class Task(models.Model):
         settings.AUTH_USER_MODEL, related_name='tasks_managed', on_delete=models.DO_NOTHING, blank=True, null=True
     )
     applicants = models.ManyToManyField(
-            settings.AUTH_USER_MODEL, through='Application', through_fields=('task', 'user'),
-            related_name='task_applications', blank=True
+        settings.AUTH_USER_MODEL, through='Application', through_fields=('task', 'user'),
+        related_name='task_applications', blank=True
     )
     participants = models.ManyToManyField(
-            settings.AUTH_USER_MODEL, through='Participation', through_fields=('task', 'user'),
-            related_name='task_participants', blank=True)
+        settings.AUTH_USER_MODEL, through='Participation', through_fields=('task', 'user'),
+        related_name='task_participants', blank=True)
 
     # Allow non-authenticated wizard user to edit after creation
     edit_token = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -467,7 +467,7 @@ class Task(models.Model):
     @property
     def pay_pm(self):
         if self.is_project and self.pm:
-            return self.pm_time_ratio*self.pay
+            return self.pm_time_ratio * self.pay
         return 0
 
     def display_fee(self, amount=None):
@@ -1218,8 +1218,7 @@ class IntegrationEvent(models.Model):
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=200, blank=True, null=True)
     created_by = models.ForeignKey(
-            settings.AUTH_USER_MODEL, blank=True, null=True, related_name='integration_events_created',
-            on_delete=models.DO_NOTHING
+        settings.AUTH_USER_MODEL, blank=True, null=True, related_name='integration_events_created', on_delete=models.DO_NOTHING
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1366,8 +1365,7 @@ class IntegrationMeta(models.Model):
     meta_key = models.CharField(max_length=30)
     meta_value = models.CharField(max_length=500)
     created_by = models.ForeignKey(
-            settings.AUTH_USER_MODEL, related_name='integration_meta_created', blank=True, null=True,
-            on_delete=models.DO_NOTHING
+        settings.AUTH_USER_MODEL, related_name='integration_meta_created', blank=True, null=True, on_delete=models.DO_NOTHING
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1588,3 +1586,25 @@ class TaskInvoiceMeta(models.Model):
 
     class Meta:
         ordering = ['created_at']
+
+
+APPROVED_WITH_CHOICES = (
+    (1, 'By the Tunga onboarding procedure'),
+    (2, 'A skills testing platform'),
+    (3, 'Has worked on Tunga tasks successfully before'),
+)
+
+
+@python_2_unicode_compatible
+class SkillsApproval(models.Model):
+    applicants = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, through='Application', through_fields=('task', 'user'),
+        related_name='task_applications', blank=True
+    )
+    participants = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, through='Participation', through_fields=('task', 'user'),
+        related_name='task_participants', blank=True)
+    created_by = created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='skills_approval')
+    created_at = models.DateTimeField(auto_now_add=True)
+    approved_with = models.CharField(
+        max_length=1, choices=APPROVED_WITH_CHOICES, default=None)
