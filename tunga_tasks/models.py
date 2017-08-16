@@ -1608,3 +1608,7 @@ class SkillsApproval(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     approved_with = models.CharField(
         max_length=1, choices=APPROVED_WITH_CHOICES, default=None)
+
+
+    def __str__(self):
+        return '%s | %s - %s' % (self.applicants, self.created_by)
