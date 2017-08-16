@@ -932,13 +932,7 @@ class ParticipantPaymentViewSet(viewsets.ModelViewSet):
     )
 
 
-class SkillsApprovalViewSet(viewsets.ModelViewSet):
-    """
-    Skills Approval Resource
-    """
-    queryset = SkillsApproval.objects.all()
-    serializer_class = SkillsApprovalSerializer
-    permission_classes = [IsAdminUser]
+
 
 
 
