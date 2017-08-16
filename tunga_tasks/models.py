@@ -1588,4 +1588,23 @@ class TaskInvoiceMeta(models.Model):
         ordering = ['created_at']
 
 
+APPROVED_WITH_CHOICES = (
+    (1, 'By the Tunga onboarding procedure'),
+    (2, 'A skills testing platform'),
+    (3, 'Has worked on Tunga tasks successfully before'),
+)
 
+
+@python_2_unicode_compatible
+class SkillsApproval(models.Model):
+    applicants = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, through='Application', through_fields=('task', 'user'),
+        related_name='task_applications', blank=True
+    )
+    participants = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, through='Participation', through_fields=('task', 'user'),
+        related_name='task_participants', blank=True)
+    created_by = created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='skills_approval')
+    created_at = models.DateTimeField(auto_now_add=True)
+    approved_with = models.CharField(
+        max_length=1, choices=APPROVED_WITH_CHOICES, default=None)

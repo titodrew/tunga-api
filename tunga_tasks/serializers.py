@@ -1153,4 +1153,6 @@ class ParticipantPaymentSerializer(ContentTypeAnnotatedModelSerializer, DetailAn
         details_serializer = ParticipantPaymentDetailsSerializer
 
 
-
+class SkillsApprovalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SkillsApproval
